@@ -7,9 +7,9 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql'),
     myConnection = require('express-myconnection'),
     dbOptions = {
-        host: 'localhost',
+        host: '47.93.50.196',
         user: 'root',//root用户
-        password: '123456',//密码
+        password: 'root',//密码
         port: 3306,//端口
         database: 'article'//数据库
     };
