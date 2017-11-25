@@ -29,9 +29,10 @@ router.get('/list', function(req, res, next) {
                     console.log(result);
                     res.json({list:result});
                 }
+                conn.release();
             });
         }
-        conn.release();
+
     });
 });
 
@@ -48,9 +49,10 @@ router.get('/targetArticle/:id',function(req,res,next){
                     console.log(result);
                     res.json({list:result});
                 }
+                conn.release();
             });
         }
-        conn.release();
+
     });
 
 });
