@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var connection = require('../public/javascripts/mysqlConnect');
 
 //allow custom header and CORS
 router.all('*',function (req, res, next) {
@@ -18,41 +18,25 @@ router.all('*',function (req, res, next) {
  * 请求地址：http://localhost:3000/article/list
  */
 router.get('/list', function(req, res, next) {
-    req.getConnection(function(err, conn) {
+    connection.query('select id,title,author,content,keyWord,update_time,create_time from article', [], function(err,result) {
         if (err) {
             return next(err);
         } else {
-            conn.query('select id,title,author,content,keyWord,update_time,create_time from article', [], function(err,result) {
-                if (err) {
-                    return next(err);
-                } else {
-                    console.log(result);
-                    res.json({list:result});
-                }
-                conn.release();
-            });
+            console.log(result);
+            res.json({list:result});
         }
-
     });
 });
 
 router.get('/targetArticle/:id',function(req,res,next){
     var id = req.params.id;
-    req.getConnection(function(err, conn) {
+    connection.query('select id,title,author,content,keyWord,update_time,create_time from article where id = '+id, [], function(err,result) {
         if (err) {
             return next(err);
         } else {
-            conn.query('select id,title,author,content,keyWord,update_time,create_time from article where id = '+id, [], function(err,result) {
-                if (err) {
-                    return next(err);
-                } else {
-                    console.log(result);
-                    res.json({list:result});
-                }
-                conn.release();
-            });
+            console.log(result);
+            res.json({list:result});
         }
-
     });
 
 });

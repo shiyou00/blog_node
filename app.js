@@ -4,15 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mysql = require('mysql'),
-    myConnection = require('express-myconnection'),
-    dbOptions = {
-        host: '47.93.50.196',
-        user: 'root',//root用户
-        password: 'root',//密码
-        port: 3306,//端口
-        database: 'article'//数据库
-    };
+
 //引入路由文件
 var index = require('./routes/article');
 
@@ -28,8 +20,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-//mysql连接
-app.use(myConnection(mysql, dbOptions, 'single')); //作为中间件来使用
+
 //静态资源目录
 app.use(express.static(path.join(__dirname, 'public')));
 //使用路由
