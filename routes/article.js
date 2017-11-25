@@ -31,6 +31,7 @@ router.get('/list', function(req, res, next) {
                 }
             });
         }
+        conn.release();
     });
 });
 
@@ -49,7 +50,9 @@ router.get('/targetArticle/:id',function(req,res,next){
                 }
             });
         }
+        conn.release();
     });
+
 });
 
 module.exports = router;
