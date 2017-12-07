@@ -1,44 +1,60 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('../public/javascripts/mysqlConnect');
-
-//allow custom header and CORS
-router.all('*',function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
-    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-    if (req.method == 'OPTIONS') {
-        res.send(200);
-    }
-    else {
-        next();
-    }
-});
-/**
- * 请求地址：http://localhost:3000/article/list
- */
+var pool = require('../public/javascripts/mysqlConnect.js');
 router.get('/list', function(req, res, next) {
-    connection.query('select id,title,author,content,keyWord,update_time,create_time from article', [], function(err,result) {
-        if (err) {
+
+    pool.getConnection(function(err,conn){
+        if(err){
             return next(err);
-        } else {
-            console.log(result);
-            res.json({list:result});
+        }else{
+            conn.query('select * from t_article',[],function(err,result){
+                //释放连接
+                conn.release();
+                //事件驱动回调
+                res.json({list:result});
+            });
         }
     });
+
 });
 
 router.get('/targetArticle/:id',function(req,res,next){
     var id = req.params.id;
-    connection.query('select id,title,author,content,keyWord,update_time,create_time from article where id = '+id, [], function(err,result) {
-        if (err) {
+    pool.getConnection(function(err,conn){
+        if(err){
             return next(err);
-        } else {
-            console.log(result);
-            res.json({list:result});
+        }else{
+            conn.query('select * from t_article where id = '+id, [], function(err,result) {
+                if (err) {
+                    return next(err);
+                } else {
+                    conn.release();
+                    res.json({list:result});
+                }
+            });
         }
     });
-
 });
 
+router.post('/add',function(req,res,next){
+    var data = req.body;
+    var date = new Date();
+    date.setHours(date.getHours() + 8);
+    var sql = "INSERT INTO t_article SET id=?,title=?,author=?,mdValue=?,htmlValue=?,keyword=?,create_time=?",
+        values = [ ,data.title,data.author,data.mdValue,data.htmlValue,data.keyWord,date];
+    pool.getConnection(function(err,conn){
+        if(err){
+            return next(err);
+        }else{
+            conn.query(sql,values,function(err,result){
+                if (err) {
+                    return next(err);
+                } else {
+                    conn.release();
+                    res.json({c:100,insertId:result.insertId});
+                }
+            });
+        }
+    });
+});
 module.exports = router;
