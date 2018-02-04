@@ -7,7 +7,8 @@ var bodyParser = require('body-parser');
 
 //引入路由文件
 var index = require('./routes/article');
-
+var canvas = require('./routes/canvas');
+var css = require('./routes/css');
 var app = express();
 
 
@@ -26,8 +27,9 @@ app.all('*',function (req, res, next) {
 
 
 // 设置模板引擎
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));//设置视图存放的目录
+app.engine('.html', require('ejs').__express);//引擎设置为ejs并且后缀还是保持.html的配置
+app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -36,10 +38,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+
 //静态资源目录
 app.use(express.static(path.join(__dirname, 'public')));
 //使用路由
 app.use('/article', index);
+app.use('/canvas', canvas);
+app.use('/css', css);
 
 // 捕捉404错误
 app.use(function(req, res, next) {
