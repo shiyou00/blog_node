@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/article');
 var canvas = require('./routes/canvas');
 var css = require('./routes/css');
+var fish = require('./routes/fish');
 var app = express();
 
 
@@ -45,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/article', index);
 app.use('/canvas', canvas);
 app.use('/css', css);
+app.use('/fish', fish);
 
 // 捕捉404错误
 app.use(function(req, res, next) {
